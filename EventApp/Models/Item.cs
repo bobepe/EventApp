@@ -8,6 +8,7 @@
         public DateTime Creted {  get; set; }
         public DateTime Deadline { get; set; }
         public bool IsFinished { get; set; }
+        public ItemType Type { get; set; }
         public Person CreatedBy { get; set; }
         public int CreatedById { get; set; }
         public Person? AssignedTo { get; set; }

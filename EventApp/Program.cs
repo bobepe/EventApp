@@ -1,10 +1,13 @@
 using EventApp.Components;
+using EventApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<ItemService>();
 
 var app = builder.Build();
 

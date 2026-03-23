@@ -1,7 +1,24 @@
 ﻿@page "/"
+@using EventApp.Models
+@using EventApp.Services
+@inject ItemService ItemService
 
 <PageTitle>Home</PageTitle>
 
 <h1>Hello, world!</h1>
 
 Welcome to your new app.
+
+@foreach (var i in items)
+{
+    <p>@i.Subject</p>
+}
+
+@code {
+    private List<Item> items;
+
+    protected override void OnInitialized()
+    {
+        items = ItemService.GetAll();
+    }
+}
