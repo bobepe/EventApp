@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Event application" />
+    <title>Event App</title>
     <base href="/" />
     @* <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="EventApp.styles.css" /> *@
@@ -15,7 +16,9 @@
 </head>
 
 <body>
-    <Routes />
+    <CascadingAuthenticationState>
+        <Routes @rendermode="InteractiveServer" />
+    </CascadingAuthenticationState>
     <script src="_framework/blazor.web.js"></script>
 
     <script>

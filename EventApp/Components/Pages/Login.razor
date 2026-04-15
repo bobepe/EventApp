@@ -1,0 +1,48 @@
+﻿@page "/login"
+@layout LoginLayout
+@attribute [AllowAnonymous]
+@inject NavigationManager Navigation
+
+<div class="login-container">
+    <!-- header -->
+    <div class="login__header">
+        <h3>Přihlášení</h3>
+    </div>
+
+    <!-- body -->
+    <form method="post" action="/account/login" @formname="loginForm" class="login__body">
+        <input type="hidden" name="ReturnUrl" value="@returnUrl" />
+
+        <div class="input-wrapper">
+            <input id="username" name="Username" required />
+            <label for="username">Uživatelské jméno</label>
+        </div>
+
+        <div class="input-wrapper">
+            <input id="password" name="Password" type="password" required />
+            <label for="password">Heslo</label>
+        </div>
+
+        <div class="remember-wrapper">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember" class="checkbox-label">
+                <span class="checkmark"></span>
+                Zapamatuj si mě
+            </label>
+        </div>
+
+        <button type="submit" class="login-btn">Přihlásit</button>
+    </form>
+</div>
+
+@code {
+    private string returnUrl = "/";
+
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+        returnUrl = query["ReturnUrl"] ?? "/";
+    }
+}

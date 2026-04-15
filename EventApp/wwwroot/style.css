@@ -1,2 +1,262 @@
-﻿body {
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+}
+
+/*** MAIN LAYOUT ***/
+.main-layout > header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 1rem;
+    border-bottom: 1px solid;
+    height: 22px;
+}
+
+/** MAIN LAYOUT - hamburger menu **/
+/* hidden checkbox */
+#menu-toggle {
+    display: none;
+}
+
+/* Hamburger icon */
+.menu-icon {
+    width: 30px;
+    height: 22px;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.menu-icon span {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: black;
+    left: 0;
+    /*transition: 0.3s;*/
+    transition: 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.menu-icon span:nth-child(1) {
+    top: 0;
+}
+
+.menu-icon span:nth-child(2) {
+    top: 9px;
+}
+
+.menu-icon span:nth-child(3) {
+    top: 18px;
+}
+
+/* animation */
+#menu-toggle:checked + .menu-icon span:nth-child(1) {
+    transform: rotate(45deg);
+    top: 9px;
+    background-color: white;
+}
+
+#menu-toggle:checked + .menu-icon span:nth-child(2) {
+    opacity: 0;
+}
+
+#menu-toggle:checked + .menu-icon span:nth-child(3) {
+    transform: rotate(-45deg);
+    top: 9px;
+    background-color: white;
+}
+
+/* menu */
+.menu-items {
+    position: fixed;
+    top: 0;
+    left: -220px;
+    width: 200px;
+    height: 100%;
+    background: #333;
+    color: white;
+    padding-top: 60px;
+    transition: 0.3s;
+    z-index: 1000;
+}
+
+/* open menu */
+#menu-toggle:checked ~ .menu-items {
+    left: 0;
+}
+
+.menu-items a {
+    display: block;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.menu-items a:hover {
+    background: #444;
+}
+
+/** MAIN LAYOUT - logout button **/
+.logout-btn {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.logout-btn button {
+    background-color: transparent;
+    border: 0;
+}
+
+/*** LOGIN ***/
+.login-layout {
+    display: flex;
+    justify-content: center;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    width: 100%;
+}
+
+/** LOGIN - header **/
+.login__header {
+    text-align: center;
+}
+
+.login__header h3 {
+    color: #1a202c;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+/** LOGIN - body **/
+.login__body {
+    padding: 0 1.5rem;
+}
+
+/* LOGIN input */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-wrapper label {
+    position: absolute;
+    left: 16px;
+    top: 45px;
+    color: #4f5968;
+    font-size: 16px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    transform-origin: left top;
+    background: #ffffff;
+    padding: 0 4px;
+}
+
+.input-wrapper input {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 12px 16px;
+    color: #1a202c;
+    font-size: 16px;
+    font-weight: 400;
+    transition: all 0.2s ease;
+    margin-top: 2rem;
+}
+
+.input-wrapper input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-wrapper input:focus + label,
+.input-wrapper input:valid + label {
+    transform: translateY(-24px) scale(0.85);
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+/* LOGIN remember me */
+.remember-wrapper {
+    margin-top: 2rem;
+}
+
+.remember-wrapper input[type="checkbox"] {
+    display: none;
+}
+
+.checkmark {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    background: #ffffff;
+}
+
+.remember-wrapper input[type="checkbox"]:checked + .checkbox-label .checkmark {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.remember-wrapper input[type="checkbox"]:checked + .checkbox-label .checkmark::after {
+    content: '✓';
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.checkbox-label {
+    color: #4a5568;
+    font-size: 14px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* LOGIN button */
+.login-btn {
+    width: 100%;
+    background: #1d4ed8;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    margin: 2rem 0;
+}
+
+.login-btn:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+/****** MEDIA ******/
+@media (max-width: 480px) {
+    .login-container {
+        margin: 0 20px;
+    }
 }
