@@ -3,23 +3,38 @@
 @inject NavigationManager Navigation
 
 <main>
-<h3>Přihlášení</h3>
 
-<form method="post" action="/account/login" @formname="loginForm">
-    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-
-    <div class="mb-3">
-            <label class="form-label" for="username" style="margin: 24px">Uživatelské jméno</label>
-        <input id="username" name="Username" style="margin: 24px" />
+<div class="login-container">
+    <!-- header -->
+    <div class="login__header">
+        <h3>Přihlášení</h3>
     </div>
 
-    <div class="mb-3">
-            <label class="form-label" for="password" style="margin: 24px">Heslo</label>
-        <input id="password" name="Password" type="password" style="margin: 24px" />
-    </div>
+    <!-- body -->
+    <form method="post" action="/account/login" @formname="loginForm" class="login__body">
+        <input type="hidden" name="ReturnUrl" value="@returnUrl" />
 
-    <button type="submit">Přihlásit</button>
-</form>
+        <div class="input-wrapper">
+            <input id="username" name="Username" required />
+            <label for="username">Uživatelské jméno</label>
+        </div>
+
+        <div class="input-wrapper">
+            <input id="password" name="Password" type="password" required />
+            <label for="password">Heslo</label>
+        </div>
+
+        <div class="remember-wrapper">
+            <input type="checkbox" id="remember" name="remember">
+            <label for="remember" class="checkbox-label">
+                <span class="checkmark"></span>
+                Zapamatuj si mě
+            </label>
+        </div>
+
+        <button type="submit" class="login-btn">Přihlásit</button>
+    </form>
+</div>
 </main>
 
 @code {
