@@ -45,6 +45,7 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<HelperService>();
 
 var app = builder.Build();
 
