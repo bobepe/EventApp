@@ -1,0 +1,12 @@
+﻿<button class="fab" @onclick="OnOpen">
+    +
+</button>
+
+@code {
+    [Parameter] public EventCallback OnOpen { get; set; }
+
+    private async Task Close()
+    {
+        await OnOpen.InvokeAsync();
+    }
+}
