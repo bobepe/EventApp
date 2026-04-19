@@ -1,0 +1,131 @@
+﻿@using EventApp.Models
+
+@if (IsOpen)
+{
+    <div class="calendar__modal-overlay" @onclick="Close">
+        <div class="calendar__modal" @onclick:stopPropagation="true">
+
+            <h3>
+                @(IsDetailMode ? "Detail události" : "Nová událost")
+            </h3>
+
+            <EditForm Model="EditableItem" OnValidSubmit="Save" class="modal-form">
+
+                <div class="modal-form-item">
+                    <label>Předmět</label>
+                    <InputText @bind-Value="EditableItem.Subject"
+                               disabled="@(!IsEditMode && IsDetailMode)" />
+                </div>
+
+                <div>
+                    <label>Kategorie</label>
+                    <select @bind="EditableItem.Type" disabled="@(!IsEditMode && IsDetailMode)">
+                        @foreach (var item in Enum.GetValues(typeof(ItemType)).Cast<ItemType>())
+                        {
+                            <option value="@item">@HelperService.GetTranslateType(item)</option>
+                        }
+                    </select>
+                </div>
+
+                <div>
+                    <label>Datum</label>
+                    <InputCheckbox @bind-Value="checkBoxDate"
+                                   disabled="@(!IsEditMode && IsDetailMode)" />
+                    <InputDate @bind-Value="EditableItem.Deadline"
+                               disabled="@((!IsEditMode && IsDetailMode) || !checkBoxDate)" />
+                </div>
+                <div>
+                    <label>Popis</label>
+                    <InputTextArea @bind-Value="EditableItem.Description"
+                               disabled="@(!IsEditMode && IsDetailMode)"
+                               class="modal-form-input--textarea" />
+                </div>
+
+                <div class="modal-form__footer">
+
+                    @if (IsDetailMode && !IsEditMode)
+                    {
+                        <button type="button" class="modal-btn modal-btn--edit" @onclick="EnableEdit">
+                            Upravit
+                        </button>
+
+                        <button type="button" class="modal-btn modal-btn--delete" @onclick="Delete">
+                            Smazat
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="modal-btn modal-btn--save">Uložit</button>
+                    }
+
+                    <button type="button" class="modal-btn modal-btn--close" @onclick="Close">
+                        Zavřít
+                    </button>
+                </div>
+
+            </EditForm>
+
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public Item? Item { get; set; }
+    [Parameter] public bool IsDetailMode { get; set; }
+
+    [Parameter] public EventCallback<Item> OnSave { get; set; }
+    [Parameter] public EventCallback<int> OnDelete { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private Item EditableItem = new();
+    private bool IsEditMode = false;
+
+    private bool checkBoxDate;
+
+    protected override void OnParametersSet()
+    {
+        if (Item != null)
+        {
+            EditableItem = new Item
+            {
+                Id = Item.Id,
+                Subject = Item.Subject,
+                Description = Item.Description,
+                Deadline = Item.Deadline,
+                Type = Item.Type
+            };
+
+            IsEditMode = !IsDetailMode;
+        }
+    }
+
+    private async Task Save()
+    {
+        await OnSave.InvokeAsync(EditableItem);
+        ResetState();
+    }
+
+    private async Task Delete()
+    {
+        await OnDelete.InvokeAsync(EditableItem.Id);
+        ResetState();
+    }
+
+    private async Task Close()
+    {
+        await OnClose.InvokeAsync();
+        ResetState();
+    }
+
+    private void EnableEdit()
+    {
+        IsEditMode = true;
+    }
+
+    private void ResetState()
+    {
+        IsEditMode = false;
+    }
+}

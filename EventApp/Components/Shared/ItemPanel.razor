@@ -13,13 +13,13 @@
             @foreach (var item in SelectedItems)
             {
                 <div class="event-item" @onclick="() => SelectItem(item)">
-                    <div class="event-color"></div>
+                    <div class="event-color @(HelperService.GetBackgroundClass(item.Type))"></div>
                     <div class="event-item-content">
                         <div class="event-subject">
                             @item.Subject
                         </div>
-                        <div class="event-category">
-                            @item.Type
+                        <div class="event-category @(HelperService.GetColorClass(item.Type))">
+                            @HelperService.GetTranslateType(item.Type)
                         </div>
                     </div>
                 </div>
