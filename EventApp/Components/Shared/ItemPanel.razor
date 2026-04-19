@@ -1,0 +1,52 @@
+﻿@using EventApp.Models
+
+<div class="event-panel">
+    <div class="event-header">
+        <div class="event-date">
+            @(SelectedDate?.ToString("dddd, d MMMM, yyyy") ?? "Vyber datum")
+        </div>
+    </div>
+
+    <div class="event-list">
+        @if (SelectedItems.Any())
+        {
+            @foreach (var item in SelectedItems)
+            {
+                <div class="event-item" @onclick="() => SelectItem(item)">
+                    <div class="event-color"></div>
+                    <div class="event-item-content">
+                        <div class="event-subject">
+                            @item.Subject
+                        </div>
+                        <div class="event-category">
+                            @item.Type
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="no-events">
+                Žádná událost
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public List<Item> Items { get; set; } = new();
+
+    [Parameter] public EventCallback<Item> OnItemSelected { get; set; }
+
+    private IEnumerable<Item> SelectedItems =>
+        SelectedDate == null
+            ? Enumerable.Empty<Item>()
+            : Items.Where(i => i.Deadline?.Date == SelectedDate.Value.Date);
+
+    private async Task SelectItem(Item item)
+    {
+        await OnItemSelected.InvokeAsync(item);
+    }
+}

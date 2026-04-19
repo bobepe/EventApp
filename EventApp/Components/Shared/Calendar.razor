@@ -1,0 +1,154 @@
+﻿@using EventApp.Models
+
+<div class="calendar__container">
+    <div class="calendar__header">
+        <div class="calendar__nav">
+            <button class="calendar__nav-btn" @onclick="PrevMonth">
+                ◀
+            </button>
+            <div class="calendar__title">
+                @CurrentDate.ToString("MMMM yyyy")
+            </div>
+            <button class="calendar__nav-btn" @onclick="NextMonth">
+                ▶
+            </button>
+        </div>
+    </div>
+
+    <div class="calendar__weekdays">
+        @foreach (var dayName in WeekDays)
+        {
+            <div class="calendar__weekday">@dayName</div>
+        }
+    </div>
+
+    <div class="calendar__days">
+        @foreach (var day in Days)
+        {
+            <div class="@GetDayClass(day)"
+                 @onclick="() => SelectDay(day.Date)">
+                @day.Date.Day
+            </div>
+        }
+    </div>
+
+    <div class="calendar__footer">
+        <button class="calendar__today-btn" @onclick="GoToToday">
+            <i class="fas fa-calendar-day"></i> Dnes
+        </button>
+
+        <div class="event-indicator">
+            <i class="fas fa-circle" style="color: #4C00A4; font-size: 0.6rem;"></i>
+            <span>Událost</span>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public DateTime CurrentDate { get; set; }
+    [Parameter] public DateTime? SelectedDate { get; set; }
+    [Parameter] public List<Item> Items { get; set; } = new();
+
+    [Parameter] public EventCallback<DateTime> OnCurrentDateChanged { get; set; }
+    [Parameter] public EventCallback<DateTime> OnDaySelected { get; set; }
+
+    private class CalendarDay
+    {
+        public DateTime Date { get; set; }
+        public bool IsCurrentMonth { get; set; }
+    }
+
+    private string[] WeekDays = { "Po", "Út", "St", "Čt", "Pá", "So", "Ne" };
+
+    private List<CalendarDay> Days
+    {
+        get
+        {
+            var days = new List<CalendarDay>();
+
+            var firstDayOfMonth = new DateTime(CurrentDate.Year, CurrentDate.Month, 1);
+            var lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+
+            // Pondělí = 0
+            int firstDayIndex = ((int)firstDayOfMonth.DayOfWeek + 6) % 7;
+
+            // Předchozí měsíc
+            var prevMonth = CurrentDate.AddMonths(-1);
+            var daysInPrevMonth = DateTime.DaysInMonth(prevMonth.Year, prevMonth.Month);
+
+            for (int i = firstDayIndex - 1; i >= 0; i--)
+            {
+                var date = new DateTime(prevMonth.Year, prevMonth.Month, daysInPrevMonth - i);
+                days.Add(new CalendarDay { Date = date, IsCurrentMonth = false });
+            }
+
+            // Aktuální měsíc
+            for (int i = 1; i <= lastDayOfMonth.Day; i++)
+            {
+                var date = new DateTime(CurrentDate.Year, CurrentDate.Month, i);
+                days.Add(new CalendarDay { Date = date, IsCurrentMonth = true });
+            }
+
+            // Následující měsíc
+            while (days.Count % 7 != 0 || days.Count < 42)
+            {
+                var nextDate = days.Last().Date.AddDays(1);
+                days.Add(new CalendarDay { Date = nextDate, IsCurrentMonth = false });
+            }
+
+            return days;
+        }
+    }
+
+    private async Task PrevMonth()
+    {
+        //CurrentDate = CurrentDate.AddMonths(-1);
+        await OnCurrentDateChanged.InvokeAsync(CurrentDate.AddMonths(-1));
+    }
+
+    private async Task NextMonth()
+    {
+        //CurrentDate = CurrentDate.AddMonths(1);
+        await OnCurrentDateChanged.InvokeAsync(CurrentDate.AddMonths(1));
+    }
+
+    private async Task GoToToday()
+    {
+        /*CurrentDate = DateTime.Today;
+        SelectedDate = DateTime.Today;*/
+        await OnCurrentDateChanged.InvokeAsync(DateTime.Today);
+        await OnDaySelected.InvokeAsync(DateTime.Today);
+    }
+
+    private async Task SelectDay(DateTime date)
+    {
+        //SelectedDate = date;
+        await OnDaySelected.InvokeAsync(date);
+
+        if (date.Month != CurrentDate.Month || date.Year != CurrentDate.Year)
+        {
+            await OnCurrentDateChanged.InvokeAsync(
+                new DateTime(date.Year, date.Month, 1));
+        }
+    }
+
+    private string GetDayClass(CalendarDay day)
+    {
+        var classes = "day";
+
+        if (!day.IsCurrentMonth)
+            classes += " other-month";
+
+        if (day.Date.Date == DateTime.Today)
+            classes += " today";
+
+        if (SelectedDate?.Date == day.Date.Date)
+            classes += " selected";
+
+        if (Items.Any(i => i.Deadline?.Date == day.Date.Date))
+            classes += " has-events";
+
+        return classes;
+    }
+
+}

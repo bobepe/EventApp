@@ -2,11 +2,12 @@
 @attribute [Authorize]
 @using EventApp.Models
 @using EventApp.Services
+@using EventApp.Components.Shared
 @inject ItemService ItemService
 
 <PageTitle>Home</PageTitle>
 
-<main>
+@* <main>
     <h1>Hello, world!</h1>
 
     Welcome to your new app.
@@ -15,13 +16,41 @@
     {
         <p>@i.Subject</p>
     }
-</main>
+</main> *@
+<div class="calendar">
+    <Calendar CurrentDate="CurrentDate"
+              SelectedDate="SelectedDate"
+              Items="Items"
+              OnCurrentDateChanged="HandleMonthChange"
+              OnDaySelected="SelectDay" />
+
+    <ItemPanel SelectedDate="SelectedDate"
+               Items="Items"
+               OnItemSelected="FakeMethod" />
+</div>
 
 @code {
-    private List<Item> items = new List<Item>();
+    // který den je zobrazen
+    private DateTime CurrentDate = DateTime.Today;
+    // na který den klikneme
+    private DateTime? SelectedDate;
+    private List<Item> Items = new();
 
     protected override void OnInitialized()
     {
-        items = ItemService.GetAll();
+        Items = ItemService.GetAll();
+        //userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
+
+    private void HandleMonthChange(DateTime newDate)
+    {
+        CurrentDate = newDate;
+    }
+
+    private void SelectDay(DateTime date)
+    {
+        SelectedDate = date;
+    }
+
+    private void FakeMethod(Item item) {}
 }
