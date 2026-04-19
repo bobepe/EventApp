@@ -8,6 +8,7 @@
         Birthday,
         NameDay,
         Holiday,
-        ShoppingList
+        ShoppingList,
+        House
     }
 }
