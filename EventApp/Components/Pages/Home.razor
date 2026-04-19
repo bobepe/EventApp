@@ -26,8 +26,17 @@
 
     <ItemPanel SelectedDate="SelectedDate"
                Items="Items"
-               OnItemSelected="FakeMethod" />
+               OnItemSelected="OpenDetail" />
 </div>
+
+<FabButton OnOpen="OpenModal" />
+
+<ItemModal IsOpen="IsModalOpen"
+           Item="SelectedItem"
+           IsDetailMode="IsDetailMode"
+           OnSave="HandleSave"
+           OnDelete="HandleDelete"
+           OnClose="CloseModal" />
 
 @code {
     // který den je zobrazen
@@ -52,5 +61,103 @@
         SelectedDate = date;
     }
 
-    private void FakeMethod(Item item) {}
+    /* modal */
+    private bool IsModalOpen = false;
+
+    private Item NewItem = new Item
+    {
+        Deadline = DateTime.Today
+    };
+
+    private Item? SelectedItem;
+
+    private bool IsEditMode = false;
+    private bool IsDetailMode = false;
+
+    private void OpenModal()
+    {
+        SelectedItem = new Item
+        {
+            Deadline = SelectedDate ?? DateTime.Today
+        };
+
+        IsDetailMode = false;
+        IsModalOpen = true;
+    }
+
+    private void OpenDetail(Item item)
+    {
+        SelectedItem = item;
+        IsDetailMode = true;
+        IsModalOpen = true;
+    }
+
+    private void HandleSave(Item item)
+    {
+        if (IsDetailMode)
+            ItemService.Update(item);
+        else
+            ItemService.Add(item);
+
+        ReloadItems();
+    }
+
+    private void HandleDelete(int id)
+    {
+        ItemService.Delete(id);
+        ReloadItems();
+    }
+
+    private void ReloadItems()
+    {
+        Items = ItemService.GetAll();
+        IsModalOpen = false;
+        IsDetailMode = false;
+    }
+
+    private void CloseModal()
+    {
+        IsModalOpen = false;
+    }
+
+    private void EnableEdit()
+    {
+        IsEditMode = true;
+    }
+
+    private void SaveItem()
+    {
+        if (IsDetailMode)
+        {
+            ItemService.Update(NewItem);
+        }
+        else
+        {
+            ItemService.Add(NewItem);
+        }
+
+        Items = ItemService.GetAll();
+
+        IsModalOpen = false;
+        IsEditMode = false;
+        IsDetailMode = false;
+    }
+
+    private void DeleteItem()
+    {
+        ItemService.Delete(NewItem.Id);
+
+        Items = ItemService.GetAll();
+
+        IsModalOpen = false;
+        IsEditMode = false;
+        IsDetailMode = false;
+
+        // pokud smažu právě vybraný den, obnoví se panel
+        if (SelectedDate != null &&
+            !Items.Any(i => i.Deadline?.Date == SelectedDate.Value.Date))
+        {
+            StateHasChanged();
+        }
+    }
 }

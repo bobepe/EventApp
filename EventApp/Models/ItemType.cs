@@ -9,6 +9,7 @@
         NameDay,
         Holiday,
         ShoppingList,
-        House
+        House,
+        Work
     }
 }

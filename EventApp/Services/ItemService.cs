@@ -22,9 +22,9 @@ namespace EventApp.Services
             if (userId == null)
                 return new List<Item>();
 
-            return _db.items
-                .Where(i => i.CreatedById == userId.Value)
-                .ToList();
+            return _db.items.ToList();
+                /*.Where(i => i.CreatedById == userId.Value)
+                .ToList();*/
         }
 
         public void Add(Item item)
@@ -35,6 +35,7 @@ namespace EventApp.Services
                 return;
 
             item.CreatedById = userId.Value;
+            item.Creted = DateTime.Now;
 
             _db.items.Add(item);
             _db.SaveChanges();
@@ -47,14 +48,16 @@ namespace EventApp.Services
             if (userId == null)
                 return;
 
-            var existing = _db.items
-                .FirstOrDefault(i => i.Id == item.Id && i.CreatedById == userId.Value);
+            var existing = _db.items.FirstOrDefault(i => i.Id == item.Id);
+                //.FirstOrDefault(i => i.Id == item.Id && i.CreatedById == userId.Value);
 
             if (existing == null)
                 return;
 
             existing.Subject = item.Subject;
             existing.Type = item.Type;
+            existing.Description = item.Description;
+            existing.Deadline = item.Deadline;
 
             _db.SaveChanges();
         }
