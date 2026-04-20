@@ -40,10 +40,15 @@
 
     [Parameter] public EventCallback<Item> OnItemSelected { get; set; }
 
+    // private IEnumerable<Item> SelectedItems =>
+    //     SelectedDate == null
+    //         ? Enumerable.Empty<Item>()
+    //         : Items.Where(i => i.Deadline?.Date == SelectedDate.Value.Date);
+
     private IEnumerable<Item> SelectedItems =>
         SelectedDate == null
             ? Enumerable.Empty<Item>()
-            : Items.Where(i => i.Deadline?.Date == SelectedDate.Value.Date);
+            : Items.Where(i => HelperService.IsEventOnDate(i, SelectedDate.Value));
 
     private async Task SelectItem(Item item)
     {

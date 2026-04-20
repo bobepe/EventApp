@@ -145,7 +145,10 @@
         if (SelectedDate?.Date == day.Date.Date)
             classes += " selected";
 
-        if (Items.Any(i => i.Deadline?.Date == day.Date.Date))
+        /*if (Items.Any(i => i.Deadline?.Date == day.Date.Date))
+            classes += " has-events";*/
+
+        if (Items.Any(i => HelperService.IsEventOnDate(i, day.Date)))
             classes += " has-events";
 
         return classes;

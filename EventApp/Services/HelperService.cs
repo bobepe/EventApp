@@ -1,4 +1,5 @@
 ﻿using EventApp.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EventApp.Services
 {
@@ -77,6 +78,22 @@ namespace EventApp.Services
                 default:
                     return "other-background";
             }
+        }
+
+        public bool IsEventOnDate(Item item, DateTime date)
+        {
+            if (item.Deadline == null)
+                return false;
+
+            var d = item.Deadline.Value;
+
+            if (item.Type != ItemType.Birthday)
+                    return d.Date == date.Date;
+
+            if (item.Type == ItemType.Birthday)
+                return d.Day == date.Day && d.Month == date.Month;
+
+            return false;
         }
     }
 }
