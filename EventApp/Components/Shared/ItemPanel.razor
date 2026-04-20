@@ -3,7 +3,7 @@
 <div class="event-panel">
     <div class="event-header">
         <div class="event-date">
-            @(SelectedDate?.ToString("dddd, d MMMM, yyyy") ?? "Vyber datum")
+            @(SelectedDate?.ToString("dddd, d MMMM, yyyy", new CultureInfo("cs-CZ")) ?? "Vyber datum")
         </div>
     </div>
 

@@ -7,7 +7,7 @@
                 ◀
             </button>
             <div class="calendar__title">
-                @CurrentDate.ToString("MMMM yyyy")
+                @CurrentDate.ToString("MMMM yyyy", new CultureInfo("cs-CZ"))
             </div>
             <button class="calendar__nav-btn" @onclick="NextMonth">
                 ▶
